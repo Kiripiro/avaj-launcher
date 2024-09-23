@@ -39,6 +39,7 @@ clean:
 fclean: clean
 	@echo "Removing output directory..."
 	@rm -rf $(OUTDIR)
+	@rm simulation.txt
 	@echo "Full clean finished."
 
 re: fclean all

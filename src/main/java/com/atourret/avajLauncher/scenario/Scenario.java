@@ -1,5 +1,8 @@
 package com.atourret.avajLauncher.scenario;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import com.atourret.avajLauncher.exceptions.InvalidScenarioException;
@@ -14,6 +17,7 @@ public class Scenario {
     private int simulations;
     private WeatherTower weatherTower;
     private ArrayList<Flyable> aircrafts = new ArrayList<>();
+    PrintWriter writer;
 
     public Scenario() {
         this.simulations = 0;
@@ -66,9 +70,16 @@ public class Scenario {
             aircraft.registerTower(weatherTower);
         }
 
+        try {
+            writer = new PrintWriter("simulation.txt", "UTF-8");
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         int currentSimulation = 1;
         while (simulations-- > 0) {
-            System.out.println("\n\u001B[32m\t== Simulation #" + (currentSimulation) + " ==\u001B[0m");
+            String line = "\n\u001B[32m\t== Simulation #" + (currentSimulation) + " ==\u001B[0m";
+            System.out.println(line);
+            writer.println(line);
             weatherTower.changeWeather();
             currentSimulation++;
         }
