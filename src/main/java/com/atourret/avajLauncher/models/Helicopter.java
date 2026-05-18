@@ -3,6 +3,8 @@ package com.atourret.avajLauncher.models;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.atourret.avajLauncher.scenario.Scenario;
+
 public class Helicopter extends Aircraft {
 
     public Helicopter(long p_id, String p_name, Coordinates p_coordinates) {
@@ -30,11 +32,12 @@ public class Helicopter extends Aircraft {
             default:
                 throw new IllegalArgumentException("Unknown weather type: " + weather);
         }
-        System.out.println(getIdentifier() + getWeatherMessage(weather));
+        Scenario.getInstance().log(getIdentifier() + getWeatherMessage(weather));
 
         if (coordinates.getHeight() <= 0) {
             coordinates.setHeight(0);
-            System.out.println(getIdentifier() + "Landing... " + coordinates.toString());
+            String aircraftName = getType() + "#" + getName() + "(" + getId() + ")";
+            Scenario.getInstance().log(aircraftName + " landing.");
             weatherTower.unregister(this);
         }
     }

@@ -4,7 +4,7 @@ import com.atourret.avajLauncher.exceptions.InvalidScenarioException;
 
 public class Validator {
 
-    private static final String BALOON = "Baloon";
+    private static final String BALLOON = "Balloon";
     private static final String JETPLANE = "JetPlane";
     private static final String HELICOPTER = "Helicopter";
 
@@ -38,13 +38,13 @@ public class Validator {
     }
 
     private static void validateAircraftType(String type) throws InvalidScenarioException {
-        if (!type.equals(BALOON) && !type.equals(JETPLANE) && !type.equals(HELICOPTER)) {
+        if (!type.equals(BALLOON) && !type.equals(JETPLANE) && !type.equals(HELICOPTER)) {
             throw new InvalidScenarioException(INVALID_AIRCRAFT_TYPE + type);
         }
     }
 
     private static void validateAircraftName(String name) throws InvalidScenarioException {
-        if (!name.matches("[A-Za-z0-9]+")) {
+        if (!name.matches("[A-Za-z0-9]+") || name.matches("\\d+")) {
             throw new InvalidScenarioException(INVALID_NAME_FORMAT + ": " + name);
         }
     }
@@ -61,6 +61,9 @@ public class Validator {
     }
 
     private static int parseCoordinate(String value) throws InvalidScenarioException {
+        if (!value.matches("\\d+")) {
+            throw new InvalidScenarioException("Invalid coordinate value: " + value);
+        }
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {

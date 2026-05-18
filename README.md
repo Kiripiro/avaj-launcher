@@ -93,13 +93,13 @@ Here's an example of what a scenario file might look like:
 
 ```
 25
-Baloon B1 2 3 20
-Baloon B2 1 8 66
+Balloon B1 2 3 20
+Balloon B2 1 8 66
 JetPlane J1 23 44 32
 Helicopter H1 654 33 20
 Helicopter H2 22 33 44
 Helicopter H3 98 68 99
-Baloon B3 102 22 34
+Balloon B3 102 22 34
 JetPlane J2 11 99 768
 Helicopter H4 223 23 54
 ```
@@ -117,7 +117,7 @@ src/main/
 │   ├── models/
 │   │   ├── Aircraft.java
 │   │   ├── AircraftFactory.java
-│   │   ├── Baloon.java
+│   │   ├── Balloon.java
 │   │   ├── Coordinates.java
 │   │   ├── Helicopter.java
 │   │   ├── JetPlane.java
@@ -171,7 +171,7 @@ It defines methods for updating conditions and registering with the WeatherTower
 ### Aircraft Models
 
 - **Aircraft.java**: Base class for all aircraft types.
-- **Baloon.java, Helicopter.java, JetPlane.java**: Specific implementations of different aircraft.
+- **Balloon.java, Helicopter.java, JetPlane.java**: Specific implementations of different aircraft.
 
 ## Exception Handling
 

@@ -22,19 +22,23 @@ public class Parser {
     }
 
     public static void parse(String fileName) throws IOException, ParsingErrorException {
-        URL resource = Parser.class.getResource("/" + fileName);
-        if (resource == null) {
-            throw new ParsingErrorException("File not found: " + fileName);
+        Path path = Paths.get(fileName);
+        if (!Files.exists(path) || !Files.isRegularFile(path)) {
+            URL resource = Parser.class.getResource("/" + fileName);
+            if (resource == null) {
+                throw new ParsingErrorException("File not found: " + fileName);
+            }
+
+            try {
+                path = Paths.get(resource.toURI());
+            } catch (URISyntaxException e) {
+                throw new ParsingErrorException("Unable to convert the file path" + e.getMessage());
+            }
         }
 
-        try {
-            Path path = Paths.get(resource.toURI());
-            Parser parser = new Parser();
-            parser.readLines(path);
-            parser.parseAndValidate();
-        } catch (URISyntaxException e) {
-            throw new ParsingErrorException("Unable to convert the file path" + e.getMessage());
-        }
+        Parser parser = new Parser();
+        parser.readLines(path);
+        parser.parseAndValidate();
     }
 
     private void readLines(Path path) throws IOException {

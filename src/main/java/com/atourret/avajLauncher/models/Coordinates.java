@@ -9,8 +9,7 @@ public class Coordinates {
     public Coordinates(int p_longitude, int p_latitude, int p_height) {
         this.longitude = p_longitude;
         this.latitude = p_latitude;
-        this.height = p_height;
-        height = Math.min(height, MAX_HEIGHT);
+        setHeight(p_height);
     }
 
     public int getLongitude() {
@@ -34,7 +33,7 @@ public class Coordinates {
     }
 
     public void setHeight(int height) {
-        this.height = height;
+        this.height = Math.min(Math.max(height, 0), MAX_HEIGHT);
     }
 
     @Override

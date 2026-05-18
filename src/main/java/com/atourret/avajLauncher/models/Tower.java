@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.atourret.avajLauncher.interfaces.Flyable;
+import com.atourret.avajLauncher.scenario.Scenario;
 
 public class Tower {
     private List<Flyable> observers = new ArrayList<>();
@@ -27,14 +28,15 @@ public class Tower {
     }
 
     protected void conditionChanged() {
-        for (int i = 0; i < observers.size(); i++) {
-            observers.get(i).updateConditions();
+        List<Flyable> snapshot = new ArrayList<>(observers);
+        for (Flyable flyable : snapshot) {
+            flyable.updateConditions();
         }
     }
 
     private void logTowerMessage(String prefix, String message) {
         final String ANSI_BLUE = "\u001B[34m";
         final String ANSI_RESET = "\u001B[0m";
-        System.out.println(ANSI_BLUE + prefix + ANSI_RESET + message);
+        Scenario.getInstance().log(ANSI_BLUE + prefix + ANSI_RESET + message);
     }
 }

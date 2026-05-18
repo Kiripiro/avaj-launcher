@@ -17,7 +17,8 @@ public class Scenario {
     private int simulations;
     private WeatherTower weatherTower;
     private ArrayList<Flyable> aircrafts = new ArrayList<>();
-    PrintWriter writer;
+    private PrintWriter writer;
+    private boolean logToConsole = true;
 
     public Scenario() {
         this.simulations = 0;
@@ -30,12 +31,23 @@ public class Scenario {
         return instance;
     }
 
-    public void setSimulations(String simulations) {
-        try {
-            this.simulations = Validator.validateSimulations(simulations);
-        } catch (InvalidScenarioException e) {
-            System.err.println(e.getMessage());
+    public void setSimulations(String simulations) throws InvalidScenarioException {
+        this.simulations = Validator.validateSimulations(simulations);
+    }
+
+    public void log(String message) {
+        String fileMessage = stripAnsi(message);
+        if (writer != null) {
+            writer.println(fileMessage);
+            writer.flush();
         }
+        if (logToConsole) {
+            System.out.println(message);
+        }
+    }
+
+    private String stripAnsi(String message) {
+        return message.replaceAll("\u001B\\[[;\\d]*m", "");
     }
 
     public int getSimulations() {
@@ -43,45 +55,44 @@ public class Scenario {
     }
 
     public void addAircraft(String[] infos) throws InvalidScenarioException {
-        try {
-            Validator.validateAircraft(infos);
+        Validator.validateAircraft(infos);
 
-            int longitude = Integer.parseInt(infos[2]);
-            int latitude = Integer.parseInt(infos[3]);
-            int height = Integer.parseInt(infos[4]);
+        int longitude = Integer.parseInt(infos[2]);
+        int latitude = Integer.parseInt(infos[3]);
+        int height = Integer.parseInt(infos[4]);
 
-            Coordinates coordinates = new Coordinates(
-                    longitude,
-                    latitude,
-                    height);
+        Coordinates coordinates = new Coordinates(
+            longitude,
+            latitude,
+            height);
 
-            Flyable newAircraft = AircraftFactory.newAircraft(
-                    infos[0],
-                    infos[1],
-                    coordinates);
-            aircrafts.add(newAircraft);
-        } catch (InvalidScenarioException e) {
-            System.err.println(e.getMessage());
-        }
+        Flyable newAircraft = AircraftFactory.newAircraft(
+            infos[0],
+            infos[1],
+            coordinates);
+        aircrafts.add(newAircraft);
     }
 
     public void start() {
-        for (Flyable aircraft : aircrafts) {
-            aircraft.registerTower(weatherTower);
-        }
-
         try {
             writer = new PrintWriter("simulation.txt", "UTF-8");
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
+            return;
+        }
+
+        logToConsole = !"false".equalsIgnoreCase(System.getProperty("avaj.console", "true"));
+
+        for (Flyable aircraft : aircrafts) {
+            aircraft.registerTower(weatherTower);
         }
         int currentSimulation = 1;
         while (simulations-- > 0) {
             String line = "\n\u001B[32m\t== Simulation #" + (currentSimulation) + " ==\u001B[0m";
-            System.out.println(line);
-            writer.println(line);
+            log(line);
             weatherTower.changeWeather();
             currentSimulation++;
         }
+        writer.close();
     }
 }
